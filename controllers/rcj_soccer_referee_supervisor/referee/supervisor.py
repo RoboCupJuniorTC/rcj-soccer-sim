@@ -1,22 +1,22 @@
-import struct
 import random
-
+import struct
 from typing import List, Tuple
 
 from controller import Supervisor
-from referee.progress_checker import ProgressChecker
-from referee.penalty_area_checker import PenaltyAreaChecker
+
 from referee.consts import (
-    ROBOT_NAMES,
-    ROBOT_INITIAL_TRANSLATION,
-    ROBOT_INITIAL_ROTATION,
     BALL_INITIAL_TRANSLATION,
     KICKOFF_TRANSLATION,
     LabelIDs,
     MAX_EVENT_MESSAGES_IN_QUEUE,
+    ROBOT_INITIAL_ROTATION,
+    ROBOT_NAMES,
+    ROBOT_INITIAL_TRANSLATION,
 )
-from referee.eventer import Eventer
 from referee.event_handlers import EventHandler
+from referee.eventer import Eventer
+from referee.penalty_area_checker import PenaltyAreaChecker
+from referee.progress_checker import ProgressChecker
 from referee.utils import time_to_string
 
 
@@ -33,7 +33,7 @@ class RCJSoccerSupervisor(Supervisor):
         penalty_area_allowed_time: int,
         penalty_area_reset_after: int,
         post_goal_wait_time: int = 3,
-        initial_position_noise: float = 0.15
+        initial_position_noise: float = 0.15,
     ):
 
         super().__init__()
@@ -68,18 +68,17 @@ class RCJSoccerSupervisor(Supervisor):
 
         for robot in ROBOT_NAMES:
             robot_node = self.getFromDef(robot)
-            field = robot_node.getField('translation')
+            field = robot_node.getField("translation")
 
             self.robot_translation_fields[robot] = field
 
-            field = robot_node.getField('rotation')
+            field = robot_node.getField("rotation")
             self.robot_rotation_fields[robot] = field
 
             self.robot_in_penalty_counter[robot] = 0
 
             self.progress_chck[robot] = ProgressChecker(
-                progress_check_steps,
-                progress_check_threshold
+                progress_check_steps, progress_check_threshold
             )
 
             self.penalty_area_chck[robot] = PenaltyAreaChecker(
@@ -90,9 +89,10 @@ class RCJSoccerSupervisor(Supervisor):
         self.ball = self.getFromDef("BALL")
         self.ball_translation_field = self.ball.getField("translation")
 
-        bpc = ProgressChecker(ball_progress_check_steps,
-                              ball_progress_check_threshold)
-        self.progress_chck['ball'] = bpc
+        bpc = ProgressChecker(
+            ball_progress_check_steps, ball_progress_check_threshold
+        )
+        self.progress_chck["ball"] = bpc
 
         self.reset_positions()
 
@@ -141,7 +141,7 @@ class RCJSoccerSupervisor(Supervisor):
             0.92,  # X position
             0.01,  # Y position
             0.1,  # Size
-            0x0000ff,  # Color
+            0x0000FF,  # Color
             0.0,  # Transparency
             "Tahoma",  # Font
         )
@@ -152,9 +152,9 @@ class RCJSoccerSupervisor(Supervisor):
             0.05,  # X position
             0.01,  # Y position
             0.1,  # Size
-            0xffff00,  # Color
+            0xFFFF00,  # Color
             0.0,  # Transparency
-            "Tahoma"  # Font
+            "Tahoma",  # Font
         )
 
     def draw_time(self, time: int):
@@ -186,9 +186,9 @@ class RCJSoccerSupervisor(Supervisor):
                 LabelIDs.EVENT_MESSAGES.value,
                 "\n".join(messages),
                 0.01,
-                0.95 - ((len(messages)-1) * 0.025),
+                0.95 - ((len(messages) - 1) * 0.025),
                 0.05,
-                0xffffff,
+                0xFFFFFF,
                 0.0,
                 "Tahoma",
             )
@@ -205,7 +205,7 @@ class RCJSoccerSupervisor(Supervisor):
         robot_translation: dict,
         ball_translation: list,
     ):
-        """ Take the positions and rotations of the robots and the ball and pack
+        """Take the positions and rotations of the robots and the ball and pack
         them into a single packet that can be send to all robots in the game.
 
         Args:
@@ -224,7 +224,7 @@ class RCJSoccerSupervisor(Supervisor):
 
         # X, Z and rotation for each robot
         # plus X and Z for ball
-        struct_fmt = 'ddd' * len(robot_translation) + 'dd'
+        struct_fmt = "ddd" * len(robot_translation) + "dd"
 
         data = []
         for robot in ROBOT_NAMES:
@@ -244,9 +244,9 @@ class RCJSoccerSupervisor(Supervisor):
     def emit_positions(self):
         self._update_positions()
 
-        packet = self._pack_packet(self.robot_rotation,
-                                   self.robot_translation,
-                                   self.ball_translation)
+        packet = self._pack_packet(
+            self.robot_rotation, self.robot_translation, self.ball_translation
+        )
 
         self.emitter.send(packet)
 
@@ -267,11 +267,10 @@ class RCJSoccerSupervisor(Supervisor):
         ball_translation_field.setSFVec3f(BALL_INITIAL_TRANSLATION)
 
         self.ball.setVelocity([0, 0, 0, 0, 0, 0])
-        self.progress_chck['ball'].reset()
+        self.progress_chck["ball"].reset()
 
     def _add_initial_position_noise(
-        self,
-        translation: List[float]
+        self, translation: List[float]
     ) -> List[float]:
 
         level = self.initial_position_noise
@@ -285,10 +284,10 @@ class RCJSoccerSupervisor(Supervisor):
         translation = ROBOT_INITIAL_TRANSLATION[robot].copy()
         translation = self._add_initial_position_noise(translation)
 
-        tr_field = self.getFromDef(robot).getField('translation')
+        tr_field = self.getFromDef(robot).getField("translation")
         tr_field.setSFVec3f(translation)
 
-        rot_field = self.getFromDef(robot).getField('rotation')
+        rot_field = self.getFromDef(robot).getField("rotation")
         rot_field.setSFRotation(ROBOT_INITIAL_ROTATION[robot])
 
         # Ensure the progress checker does not count this "jump"
@@ -297,9 +296,9 @@ class RCJSoccerSupervisor(Supervisor):
         self.penalty_area_chck[robot].reset()
 
     def robot_name_to_team_name(self, robot_name: str) -> str:
-        if robot_name.startswith('Y'):
+        if robot_name.startswith("Y"):
             return self.team_name_yellow
-        elif robot_name.startswith('B'):
+        elif robot_name.startswith("B"):
             return self.team_name_blue
         else:
             raise ValueError(f"Unrecognized robot's name {robot_name}")
@@ -313,12 +312,12 @@ class RCJSoccerSupervisor(Supervisor):
             str: Name of the robot that is kicking off.
         """
         # Always kickoff with the third robot
-        robot = f'{team}3'
+        robot = f"{team}3"
 
-        tr_field = self.getFromDef(robot).getField('translation')
+        tr_field = self.getFromDef(robot).getField("translation")
         tr_field.setSFVec3f(KICKOFF_TRANSLATION[team])
 
-        rot_field = self.getFromDef(robot).getField('rotation')
+        rot_field = self.getFromDef(robot).getField("rotation")
         rot_field.setSFRotation(ROBOT_INITIAL_ROTATION[robot])
 
         return robot

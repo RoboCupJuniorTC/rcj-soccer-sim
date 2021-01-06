@@ -22,20 +22,20 @@ BLUE_LEFT_NS = "blue_left_ns"
 BLUE_MIDDLE_NS = "blue_middle_ns"
 BLUE_RIGHT_NS = "blue_right_ns"
 NEUTRAL_SPOTS = {
-   CENTER_NS:        (0,    0),
-   YELLOW_LEFT_NS:   (-0.3, -0.3),
-   YELLOW_MIDDLE_NS: (-0.2, 0),
-   YELLOW_RIGHT_NS:  (-0.3, 0.3),
-   BLUE_LEFT_NS:     (0.3,  0.3),
-   BLUE_MIDDLE_NS:   (0.2,  0),
-   BLUE_RIGHT_NS:    (0.3,  -0.3),
+    CENTER_NS: (0, 0),
+    YELLOW_LEFT_NS: (-0.3, -0.3),
+    YELLOW_MIDDLE_NS: (-0.2, 0),
+    YELLOW_RIGHT_NS: (-0.3, 0.3),
+    BLUE_LEFT_NS: (0.3, 0.3),
+    BLUE_MIDDLE_NS: (0.2, 0),
+    BLUE_RIGHT_NS: (0.3, -0.3),
 }
 
 
 ROBOT_INITIAL_TRANSLATION = {
-    "B1": [0.3,  0.03817, 0.3],
-    "B2": [0.3,  0.03817, -0.3],
-    "B3": [0.3,  0.03817, 0],
+    "B1": [0.3, 0.03817, 0.3],
+    "B2": [0.3, 0.03817, -0.3],
+    "B3": [0.3, 0.03817, 0],
     "Y1": [-0.3, 0.03817, -0.3],
     "Y2": [-0.3, 0.03817, 0.3],
     "Y3": [-0.3, 0.03817, 0],
@@ -55,7 +55,7 @@ YELLOW_KICKOFF_TRANSLATION = [-0.1, 0.03817, 0]
 
 KICKOFF_TRANSLATION = {
     Team.BLUE.value: BLUE_KICKOFF_TRANSLATION,
-    Team.YELLOW.value: YELLOW_KICKOFF_TRANSLATION
+    Team.YELLOW.value: YELLOW_KICKOFF_TRANSLATION,
 }
 
 # (vertical boundary x, lower boundary z, upper boundary z)
@@ -67,6 +67,7 @@ MAX_EVENT_MESSAGES_IN_QUEUE = 10
 
 class LabelIDs(Enum):
     """Each label ought to have specific ID when calling setLabel function."""
+
     BLUE_SCORE = 0
     YELLOW_SCORE = 1
     TIME = 2

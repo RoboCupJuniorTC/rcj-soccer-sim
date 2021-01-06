@@ -1,6 +1,7 @@
 import math
 import struct
 from typing import Tuple
+
 from controller import Robot
 
 TIME_STEP = 64
@@ -22,8 +23,8 @@ class RCJSoccerRobot:
         self.left_motor = self.robot.getMotor("left wheel motor")
         self.right_motor = self.robot.getMotor("right wheel motor")
 
-        self.left_motor.setPosition(float('+inf'))
-        self.right_motor.setPosition(float('+inf'))
+        self.left_motor.setPosition(float("+inf"))
+        self.right_motor.setPosition(float("+inf"))
 
         self.left_motor.setVelocity(0.0)
         self.right_motor.setVelocity(0.0)
@@ -43,7 +44,7 @@ class RCJSoccerRobot:
         """
         # X, Z and rotation for each robot
         # plus X and Z for ball
-        struct_fmt = 'ddd' * 6 + 'dd'
+        struct_fmt = "ddd" * 6 + "dd"
 
         unpacked = struct.unpack(struct_fmt, packet)
 
@@ -52,11 +53,11 @@ class RCJSoccerRobot:
             data[r] = {
                 "x": unpacked[3 * i],
                 "y": unpacked[3 * i + 1],
-                "orientation": unpacked[3 * i + 2]
+                "orientation": unpacked[3 * i + 2],
             }
         data["ball"] = {
             "x": unpacked[3 * N_ROBOTS],
-            "y": unpacked[3 * N_ROBOTS + 1]
+            "y": unpacked[3 * N_ROBOTS + 1],
         }
         return data
 
@@ -79,7 +80,9 @@ class RCJSoccerRobot:
         """
         return self.receiver.getQueueLength() > 0
 
-    def get_angles(self, ball_pos: dict, robot_pos: dict) -> Tuple[float, float]:
+    def get_angles(
+        self, ball_pos: dict, robot_pos: dict
+    ) -> Tuple[float, float]:
         """Get angles in degrees.
 
         Args:
@@ -92,12 +95,12 @@ class RCJSoccerRobot:
                 Angle between the robot and the ball
                 Angle between the robot and the north
         """
-        robot_angle: float = robot_pos['orientation']
+        robot_angle: float = robot_pos["orientation"]
 
         # Get the angle between the robot and the ball
         angle = math.atan2(
-            ball_pos['y'] - robot_pos['y'],
-            ball_pos['x'] - robot_pos['x'],
+            ball_pos["y"] - robot_pos["y"],
+            ball_pos["x"] - robot_pos["x"],
         )
 
         if angle < 0:

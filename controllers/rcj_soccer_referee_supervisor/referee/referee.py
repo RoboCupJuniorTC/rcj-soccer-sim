@@ -1,11 +1,12 @@
 import random
 from typing import Optional
+
 from referee.consts import (
-    GOAL_X_LIMIT,
-    TIME_STEP,
-    ROBOT_NAMES,
     GameEvents,
-    Team
+    GOAL_X_LIMIT,
+    ROBOT_NAMES,
+    Team,
+    TIME_STEP,
 )
 from referee.supervisor import RCJSoccerSupervisor
 
@@ -49,19 +50,17 @@ class RCJSoccerReferee(RCJSoccerSupervisor):
                     payload={
                         "type": "robot",
                         "robot_name": robot,
-                    }
+                    },
                 )
                 self.reset_robot_position(robot)
 
         bpos = self.ball_translation.copy()
-        self.progress_chck['ball'].track(bpos)
-        if not self.progress_chck['ball'].is_progress('ball'):
+        self.progress_chck["ball"].track(bpos)
+        if not self.progress_chck["ball"].is_progress("ball"):
             self.eventer.event(
                 supervisor=self,
                 type=GameEvents.LACK_OF_PROGRESS.value,
-                payload={
-                    "type": "ball"
-                },
+                payload={"type": "ball"},
             )
             self.reset_ball_position()
 

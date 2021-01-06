@@ -1,16 +1,19 @@
+# isort: off
 # rcj_soccer_player controller - ROBOT B3
 
-###### REQUIRED in order to import files from B1 controller
+# REQUIRED in order to import files from B1 controller
 import sys
 from pathlib import Path
-sys.path.append(str(Path('.').absolute().parent))
+
+sys.path.append(str(Path(".").absolute().parent))
 # You can now import scripts that you put into the folder with your
 # robot B1 controller
 from rcj_soccer_player_b1 import rcj_soccer_robot, utils
-######
+
+# REQUIRED ENDS
 
 # Feel free to import built-in libraries
-import math
+import math  # noqa: F401
 
 
 class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
@@ -22,7 +25,7 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                 # Get the position of our robot
                 robot_pos = data[self.name]
                 # Get the position of the ball
-                ball_pos = data['ball']
+                ball_pos = data["ball"]
 
                 # Get angle between the robot and the ball
                 # and between the robot and the north

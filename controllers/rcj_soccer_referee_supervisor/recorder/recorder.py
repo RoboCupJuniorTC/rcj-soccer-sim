@@ -1,19 +1,19 @@
-from controller import Supervisor
-
-from pathlib import Path
 import datetime
-import time
-
 import logging
+import time
+from pathlib import Path
+
+from controller import Supervisor
 
 
 class VideoRecordAssistant:
-
-    def __init__(self,
-                 supervisor: Supervisor,
-                 output_path: str = "",
-                 fastforward_rate: int = 1,
-                 resolution: str = "720p"):
+    def __init__(
+        self,
+        supervisor: Supervisor,
+        output_path: str = "",
+        fastforward_rate: int = 1,
+        resolution: str = "720p",
+    ):
 
         self.supervisor = supervisor
         self.output_path = output_path
@@ -35,9 +35,11 @@ class VideoRecordAssistant:
         return self.output_path
 
     def get_resolution(self):
-        res_table = {"480p": (720, 480),
-                     "720p": (1280, 720),
-                     "1080p": (1920, 1080)}
+        res_table = {
+            "480p": (720, 480),
+            "720p": (1280, 720),
+            "1080p": (1920, 1080),
+        }
 
         if self.resolution not in res_table:
             raise ValueError("Invalid Resolution")
@@ -50,13 +52,15 @@ class VideoRecordAssistant:
 
         # API details for movieStartRecording
         # https://www.cyberbotics.com/doc/reference/supervisor?tab-language=python#wb_supervisor_movie_start_recording
-        self.supervisor.movieStartRecording(filename,
-                                            width,
-                                            height,
-                                            quality=100,
-                                            codec=0,
-                                            acceleration=self.fastforward_rate,
-                                            caption=False)
+        self.supervisor.movieStartRecording(
+            filename,
+            width,
+            height,
+            quality=100,
+            codec=0,
+            acceleration=self.fastforward_rate,
+            caption=False,
+        )
         self.__recording = True
 
     def stop_recording(self):
@@ -67,7 +71,6 @@ class VideoRecordAssistant:
         return self.__recording
 
     def wait_processing(self):
-        logging.info('Processing Video...')
+        logging.info("Processing Video...")
         while not self.supervisor.movieIsReady():
             time.sleep(1.0)
-

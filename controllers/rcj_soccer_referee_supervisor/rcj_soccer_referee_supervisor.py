@@ -1,11 +1,11 @@
-from math import ceil
 from datetime import datetime
+from math import ceil
 from pathlib import Path, PosixPath
 
-from referee.consts import MATCH_TIME, TIME_STEP
-from referee.event_handlers import JSONLoggerHandler, DrawMessageHandler
-from referee.referee import RCJSoccerReferee
 from recorder.recorder import VideoRecordAssistant
+from referee.consts import MATCH_TIME, TIME_STEP
+from referee.event_handlers import DrawMessageHandler, JSONLoggerHandler
+from referee.referee import RCJSoccerReferee
 
 automatic_mode = False
 
@@ -18,28 +18,27 @@ def output_path(
     team_blue: str,
     team_yellow: str,
 ) -> PosixPath:
-
-    now_str = datetime.utcnow().strftime('%Y%m%dT%H%M%S.%fZ')
-    team_blue = team_blue.replace(' ', '_')
-    team_yellow = team_yellow.replace(' ', '_')
+    now_str = datetime.utcnow().strftime("%Y%m%dT%H%M%S.%fZ")
+    team_blue = team_blue.replace(" ", "_")
+    team_yellow = team_yellow.replace(" ", "_")
 
     # Ensure the directory ecists
     if not directory.exists():
         directory.mkdir(parents=True, exist_ok=True)
 
-    p = directory / Path(f'{team_blue}_vs_{team_yellow}-{now_str}')
+    p = directory / Path(f"{team_blue}_vs_{team_yellow}-{now_str}")
     return p
 
 
-output_prefix = output_path(Path('reflog'), TEAM_BLUE, TEAM_YELLOW)
-reflog_path = output_prefix.with_suffix('.jsonl')
-video_path = output_prefix.with_suffix('.mp4')
+output_prefix = output_path(Path("reflog"), TEAM_BLUE, TEAM_YELLOW)
+reflog_path = output_prefix.with_suffix(".jsonl")
+video_path = output_prefix.with_suffix(".mp4")
 
 referee = RCJSoccerReferee(
     match_time=MATCH_TIME,
-    progress_check_steps=ceil(15/(TIME_STEP/1000.0)),
+    progress_check_steps=ceil(15 / (TIME_STEP / 1000.0)),
     progress_check_threshold=0.5,
-    ball_progress_check_steps=ceil(10/(TIME_STEP/1000.0)),
+    ball_progress_check_steps=ceil(10 / (TIME_STEP / 1000.0)),
     ball_progress_check_threshold=0.5,
     team_name_blue=TEAM_BLUE,
     team_name_yellow=TEAM_YELLOW,
@@ -80,4 +79,3 @@ if recorder.is_recording():
 
 if automatic_mode:
     referee.simulationQuit(0)
-
